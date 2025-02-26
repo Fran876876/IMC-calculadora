@@ -1,9 +1,12 @@
 package com.example.imc_calculadora
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -42,68 +45,99 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        heightTextView = findViewById(R.id.heightTextView)
-        heightSlider = findViewById(R.id.heightSlider)
+        fun initViews(){
+            heightTextView = findViewById(R.id.heightTextView)
+            heightSlider = findViewById(R.id.heightSlider)
 
-        weightTextView = findViewById(R.id.weightTextView)
-        weightAddButton = findViewById(R.id.weightAddButton)
-        weightMinusButton = findViewById(R.id.weightMinusButton)
+            weightTextView = findViewById(R.id.weightTextView)
+            weightAddButton = findViewById(R.id.weightAddButton)
+            weightMinusButton = findViewById(R.id.weightMinusButton)
 
-        calculateButton = findViewById(R.id.calculateButton)
-        resultTextView = findViewById(R.id.resultTextView)
-        descriptionTextView = findViewById(R.id.descriptionTextView)
+            calculateButton = findViewById(R.id.calculateButton)
+            resultTextView = findViewById(R.id.resultTextView)
+            descriptionTextView = findViewById(R.id.descriptionTextView)
+        }
 
         heightSlider.addOnChangeListener { slider, value, fromUser ->
-            height = value
-            heightTextView.text = "${height.toInt()}"
+        height = value
+        heightTextView.text = "${height.toInt()}"
         }
 
-        weightAddButton.setOnClickListener {
+        weightAddButton.setOnClickListener{
             weight ++
+            if(weight > 300){
+                weight = 300f
+            }
             weightTextView.text = "${weight.toInt()}"
         }
 
-        weightMinusButton.setOnClickListener {
+        weightMinusButton.setOnClickListener{
             weight --
+            if(weight < 1){
+                weight = 1f
+            }
             weightTextView.text = "${weight.toInt()}"
         }
 
-        calculateButton.setOnClickListener {
+        calculateButton.setOnClickListener{
+            calculateBMI()
+        }
+    }
+
+        private fun calculateBMI(){
+
             val result = weight / (height / 100).pow(2)
 
             resultTextView.text = String.format(Locale.getDefault(), "%.2f", result)
 
-            var colorId = 0
-            var textId = 0
-            when (result) {
-                in 0f..<18.5f -> {
+                var colorId = 0
+                var textId = 0
+            when(result){
+                in 0f..18.5f ->{
                     colorId = R.color.imc_underweight
                     textId = R.string.imc_underweight
                 }
-                in 18.5f..<25f -> {
+                in 18.5..25f ->{
                     colorId = R.color.imc_normal
                     textId = R.string.imc_normal
                 }
-                in 25f..<30f -> {
+                in 25f..30f ->{
                     colorId = R.color.imc_overweight
                     textId = R.string.imc_overweight
                 }
-                in 30f..<35f -> {
+                in 30f..35f ->{
                     colorId = R.color.imc_obesity1
                     textId = R.string.imc_obesity1
                 }
-                in 35f..<40f -> {
+                in 35f..40f ->{
                     colorId = R.color.imc_obesity2
                     textId = R.string.imc_obesity2
                 }
-                else -> {
+                else ->{
                     colorId = R.color.imc_obesity3
                     textId = R.string.imc_obesity3
+                    showObesityDialog()
                 }
             }
             resultTextView.setTextColor(getColor(colorId))
             descriptionTextView.setTextColor(getColor(colorId))
             descriptionTextView.text = getString(textId)
         }
-    }
+
+
+             fun showObesityDialog(){
+                 AlertDialog.Builder(this)
+                     .setTitle(R.string.obesity_alert_title)
+                     .setMessagge(R.string.obesity_alert_message)
+                     .setPositiveButton(R.string.obesity_alert_button, { dialog, wich ->
+                         val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.teknon.es/es/especialidades/gonzalbez-morgaez-jose/dietetica-obesidad/recomendaciones-pacientes-obesidad"))
+                         startActivity(browserIntent)
+
+                     })
+                     .setNegativeButton(android.R.string.cancel, null)
+                     .show()
+             }
+
+        }
+
 }
