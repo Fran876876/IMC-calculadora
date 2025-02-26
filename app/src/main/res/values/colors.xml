@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="primary">#A68E8E</color>
+    <color name="background">#00BCD4</color>
+
+
+    <color name="imc_underweight">#00BCD4</color>
+    <color name="imc_normal">#4CAF50</color>
+    <color name="imc_overweight">#CABA2A</color>
+    <color name="imc_obesity1">#B38E21</color>
+    <color name="imc_obesity2">#AB1548</color>
+    <color name="imc_obesity3">#E91303</color>
+
+
+</resources>
